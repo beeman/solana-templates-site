@@ -1,5 +1,5 @@
-import { DashboardFeature } from '@/components/dashboard/dashboard-feature'
+import { TemplatesFeature } from '@/components/templates/templates-feature'
 
 export default function Home() {
-  return <DashboardFeature />
+  return <TemplatesFeature />
 }
