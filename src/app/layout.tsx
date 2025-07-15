@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 const links: { label: string; path: string }[] = [
   // More links...
-  { label: 'Templates', path: '/' },
+  { label: 'Templates', path: '/templates' },
 ]
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

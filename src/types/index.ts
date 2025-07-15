@@ -16,6 +16,7 @@ export interface Template {
   keywords: string[]
   name: string
   path: string
+  readme: string
   repoUrl: string
 }
 

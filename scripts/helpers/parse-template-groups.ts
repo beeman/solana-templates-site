@@ -2,13 +2,13 @@ import { TemplateGroup, TemplateListing, TemplateSource } from '@/types'
 import { getTemplateListings } from './get-template-listings'
 import { fetchTemplatesJson } from './fetch-templates-json'
 
-export function parseTemplateGroups({
+export async function parseTemplateGroups({
   groups,
   source,
 }: {
   groups: TemplateGroup[]
   source: TemplateSource
-}): TemplateListing[] {
+}): Promise<TemplateListing[]> {
   const tag = `[${source.name}]`
 
   if (!groups.length) {
@@ -31,7 +31,8 @@ export async function getListings({ sources }: { sources: TemplateSource[] }) {
   for (const source of sources) {
     try {
       const groups = await fetchTemplatesJson(source)
-      result.push(...parseTemplateGroups({ groups, source }))
+      const parsed = await parseTemplateGroups({ groups, source })
+      result.push(...parsed)
     } catch (error) {
       console.error(`[${source.name}] Error fetching templates: ${error}`)
     }

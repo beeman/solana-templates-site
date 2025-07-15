@@ -1,5 +1,5 @@
-import { TemplatesFeature } from '@/components/templates/templates-feature'
+import { redirect } from 'next/navigation';
 
 export default function Home() {
-  return <TemplatesFeature />
+  redirect('/templates');
 }
