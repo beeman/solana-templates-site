@@ -7,7 +7,7 @@ const filteredKeywords = ['legacy', 'template', 'solana']
 
 export function useTemplateFilterState({ listings }: { listings: TemplateListing[] }) {
   const [search, setSearch] = useQueryState('search', parseAsString.withDefault(''))
-  const [activeSources, setActiveSources] = useQueryState('source', parseAsArrayOf(parseAsString).withDefault([]))
+  const [activeSources, setActiveSources] = useQueryState('sources', parseAsArrayOf(parseAsString).withDefault([]))
   const [activeKeywords, setActiveKeywords] = useQueryState('keywords', parseAsArrayOf(parseAsString).withDefault([]))
 
   const sources = useMemo(() => {
@@ -25,7 +25,6 @@ export function useTemplateFilterState({ listings }: { listings: TemplateListing
 
   const filteredListings = useMemo(() => {
     const q = (search ?? '').toLowerCase()
-    const keywords = activeKeywords ?? []
     return listings
       .filter((l) => {
         const inName = l.name.toLowerCase().includes(q)
