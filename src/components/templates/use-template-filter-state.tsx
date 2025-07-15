@@ -2,13 +2,18 @@ import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs'
 import { TemplateListing } from '@/types'
 import { useMemo } from 'react'
 
+// TODO: Move these filtered keywords to the generators
+const filteredKeywords = ['legacy', 'template']
+
 export function useTemplateFilterState({ listings }: { listings: TemplateListing[] }) {
   const [search, setSearch] = useQueryState('search', parseAsString.withDefault(''))
   const [activeKeywords, setActiveKeywords] = useQueryState('keywords', parseAsArrayOf(parseAsString).withDefault([]))
 
   const keywords = useMemo(() => {
-    const allKeywords = listings.flatMap((l) => l.keywords)
-    return Array.from(new Set(allKeywords)).sort()
+    const all = listings.flatMap((l) => l.keywords)
+    const filtered = all.filter((k) => !filteredKeywords.includes(k))
+
+    return Array.from(new Set(filtered)).sort()
   }, [listings])
 
   const filteredListings = useMemo(() => {
