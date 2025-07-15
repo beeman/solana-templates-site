@@ -13,14 +13,19 @@ export function TemplatesUiGridItem({ listing }: { listing: TemplateListing }) {
         <p className="text-sm text-gray-500 dark:text-gray-400">{listing.description}</p>
         <div className="flex justify-between items-center">
           <p className="text-sm text-gray-500 dark:text-gray-400">by {listing.source.name}</p>
-          <a
-            href={listing.repoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={(e) => {
+              e.preventDefault()
+              return window.open(listing.repoUrl, '_blank', 'noopener,noreferrer')
+            }}
+            title="View Repo"
+            role="link"
+            aria-label="View Repo"
+            type="button"
             className="text-sm flex items-center gap-1 hover:underline"
           >
-            View Repo <ExternalLinkIcon className="h-4 w-4" />
-          </a>
+            <ExternalLinkIcon className="h-4 w-4" />
+          </button>
         </div>
       </div>
     </Link>

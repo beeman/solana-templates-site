@@ -1,31 +1,19 @@
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
+import { useTemplateFilterState } from '@/components/templates/use-template-filter-state'
+import { TemplateListing } from '@/types'
 
-export function TemplatesUiFilter({
-  keywords,
-  activeKeywords,
-  setActiveKeywords,
-  search,
-  setSearch,
-}: {
-  keywords: string[]
-  activeKeywords: string[]
-  setActiveKeywords: (keywords: string[]) => void
-  search: string
-  setSearch: (search: string) => void
-}) {
-  const toggleKeyword = (keyword: string) => {
-    setActiveKeywords(
-      activeKeywords.includes(keyword) ? activeKeywords.filter((k) => k !== keyword) : [...activeKeywords, keyword],
-    )
-  }
+export function TemplatesUiFilter({ listings }: { listings: TemplateListing[] }) {
+  const { activeKeywords, keywords, search, setSearch, toggleKeyword } = useTemplateFilterState({ listings })
 
   return (
     <div className="space-y-6">
       <div>
         <Label>Search</Label>
-        <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search templates..." />
+        <div className="pt-2">
+          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search templates..." />
+        </div>
       </div>
       <div>
         <Label>Filters</Label>
