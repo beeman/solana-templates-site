@@ -3,11 +3,18 @@ import { TemplateListing } from '@/types'
 import { useMemo } from 'react'
 
 // TODO: Move these filtered keywords to the generators
-const filteredKeywords = ['legacy', 'template']
+const filteredKeywords = ['legacy', 'template', 'solana']
 
 export function useTemplateFilterState({ listings }: { listings: TemplateListing[] }) {
   const [search, setSearch] = useQueryState('search', parseAsString.withDefault(''))
+  const [activeSources, setActiveSources] = useQueryState('source', parseAsArrayOf(parseAsString).withDefault([]))
   const [activeKeywords, setActiveKeywords] = useQueryState('keywords', parseAsArrayOf(parseAsString).withDefault([]))
+
+  const sources = useMemo(() => {
+    const all = listings.flatMap((l) => l.source.name)
+
+    return Array.from(new Set(all))
+  }, [listings])
 
   const keywords = useMemo(() => {
     const all = listings.flatMap((l) => l.keywords)
@@ -27,23 +34,32 @@ export function useTemplateFilterState({ listings }: { listings: TemplateListing
 
         return inName || inDescription || inKeywords
       })
-      .filter((l) => keywords.every((k) => l.keywords.includes(k)))
+      .filter((l) => (activeSources.length ? activeSources.some((s) => l.source.name === s) : true))
+      .filter((l) => activeKeywords.every((k) => l.keywords.includes(k)))
   }, [listings, search, activeKeywords])
 
   return {
     activeKeywords,
+    activeSources,
     clear: async () => {
-      await setSearch('')
-      await setActiveKeywords([])
+      await Promise.all([setSearch(''), setActiveSources([]), setActiveKeywords([])])
     },
     filteredListings,
+    hasFilters: activeKeywords.length || activeSources.length || search !== '',
     keywords,
     search,
-    setActiveKeywords,
     setSearch,
+    sources,
     toggleKeyword: async (keyword: string) => {
       await setActiveKeywords(
         activeKeywords.includes(keyword) ? activeKeywords.filter((k) => k !== keyword) : [...activeKeywords, keyword],
+      )
+    },
+    toggleSource: async (source: string) => {
+      await setActiveSources(
+        activeSources.some((s) => s === source)
+          ? activeSources.filter((s) => s !== source)
+          : [...activeSources, source],
       )
     },
   }

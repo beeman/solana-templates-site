@@ -3,18 +3,34 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useTemplateFilterState } from '@/components/templates/use-template-filter-state'
 import { TemplateListing } from '@/types'
+import { getLabelKeyword } from '@/components/templates/get-label-keyword'
+import { getLabelSource } from '@/components/templates/get-label-source'
 
 export function TemplatesUiFilter({ listings }: { listings: TemplateListing[] }) {
-  const { activeKeywords, keywords, search, setSearch, toggleKeyword } = useTemplateFilterState({ listings })
+  const {
+    activeKeywords,
+    activeSources,
+    clear,
+    hasFilters,
+    keywords,
+    search,
+    setSearch,
+    sources,
+    toggleKeyword,
+    toggleSource,
+  } = useTemplateFilterState({ listings })
 
   return (
     <div className="space-y-6">
-      <div>
-        <Label>Search</Label>
-        <div className="pt-2">
-          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search templates..." />
-        </div>
+      <div className="flex justify-between items-center">
+        <span className="text-lg font-bold py-1">Filter Templates</span>
+        {hasFilters ? (
+          <Button variant="outline" onClick={() => clear()}>
+            Clear
+          </Button>
+        ) : null}
       </div>
+      <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search templates..." />
       <div>
         <Label>Filters</Label>
         <div className="space-y-2 pt-2">
@@ -25,46 +41,26 @@ export function TemplatesUiFilter({ listings }: { listings: TemplateListing[] })
               onClick={() => toggleKeyword(keyword)}
               className="w-full justify-start"
             >
-              {getKeywordLabel(keyword)}
+              {getLabelKeyword(keyword)}
+            </Button>
+          ))}
+        </div>
+      </div>
+      <div>
+        <Label>Sources</Label>
+        <div className="space-y-2 pt-2">
+          {sources.map((item) => (
+            <Button
+              key={item}
+              variant={activeSources.some((s) => s === item) ? 'default' : 'outline'}
+              onClick={() => toggleSource(item)}
+              className="w-full justify-start"
+            >
+              {getLabelSource(item)}
             </Button>
           ))}
         </div>
       </div>
     </div>
   )
-}
-
-function getKeywordLabel(keyword: string) {
-  switch (keyword) {
-    case 'anchor-basic':
-      return 'Anchor Basic'
-    case 'anchor-counter':
-      return 'Anchor Counter'
-    case 'express':
-      return 'Express'
-    case 'gill':
-      return 'Gill'
-    case 'nextjs':
-      return 'Next.js'
-    case 'node':
-      return 'Node'
-    case 'react':
-      return 'React'
-    case 'solana-kit':
-      return '@solana/kit'
-    case 'solana-web3js':
-      return '@solana/web3.js'
-    case 'tailwind':
-      return 'Tailwind'
-    case 'typescript':
-      return 'TypeScript'
-    case 'vite':
-      return 'Vite'
-    case 'wallet-adapter':
-      return 'Wallet Adapter'
-    case 'wallet-ui':
-      return 'Wallet UI'
-    default:
-      return keyword
-  }
 }
